@@ -14,9 +14,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -25,22 +29,19 @@ import android.widget.AdapterView;
 import java.util.List;
 
 
-public class TabManager extends AppCompatActivity {
+public class TabManager extends android.support.v4.app.Fragment{
 
     public static int num=0;
-
-
-
-
+    public MyAdapter myAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.tabmanager);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.tabmanager, null);
 
-        final ListView lv=findViewById(R.id.tabs);
-        final MyAdapter myAdapter = new MyAdapter(this);
-        myAdapter.setbfList(MainActivity.browser);
+        final ListView lv=view.findViewById(R.id.tabs);
+        myAdapter = new MyAdapter(getContext());
+
         lv.setAdapter(myAdapter);
 
 
@@ -48,35 +49,34 @@ public class TabManager extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Browser browser=new Browser();
                 browser.setindex(position);
-                Intent intent=new Intent(TabManager.this,browser.getClass());
-                startActivity(intent);
-                finish();
+
 
             }
         });
 
-        Button addbtn=findViewById(R.id.addnewtab);
+        Button addbtn=view.findViewById(R.id.addnewtab);
         addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Browser newbrowser=new Browser();
-                newbrowser.setindex(MainActivity.browser.size());
-                BrowserFragment bf=new BrowserFragment();
-                bf.setindex(MainActivity.browser.size());
-                MainActivity.browser.add(bf);
-                Bundle newstate=new Bundle();
-                bf.setStates(newstate);
+                View inflatedView = getLayoutInflater().inflate(R.layout.activity_main, null);
+                LinearLayout container = inflatedView.findViewById(R.id.container);
                 myAdapter.notifyDataSetChanged();
-
-
-
-
-                //Bundle newstate=new Bundle();
-                //MainActivity.states.add(newstate);
-                //MainActivity.currentlink[MainActivity.browser.size()]=null;
+                MainActivity.saveappstate();
+                MainActivity.fm.beginTransaction().add(container.getId(),newbrowser).hide(MainActivity.tm).show(MainActivity.tm).commit();
+                Log.d("Num of frags",String.valueOf(MainActivity.fm.getFragments().size()));
 
 
             }
         });
+
+
+        return view;
     }
+
+
+
+
+
+
 }
