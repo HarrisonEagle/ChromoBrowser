@@ -1,4 +1,2 @@
 # ChromoBrowser
-極簡単なAndroidスマホ向けのマルチタスクのWebブラウザ
-UI雑すぎてごめんなさい
-バグが結構ありますのでこのブラウザを使ってMyWasedaなど個人情報に関わるサイトをアクセスしないようご注意願います
+A Simple Tabbed Browser that used WebView
